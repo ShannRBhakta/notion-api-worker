@@ -21,17 +21,57 @@ const corsHeaders = {
 
 const router = new Router<Handler>();
 
+// --- Serve your portfolio homepage at "/" ---
+router.get("/", () =>
+  new Response(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <title>Shann Bhakta</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 3rem; background: #f7f7f9; }
+        .container { max-width: 600px; margin: auto; padding: 2rem; background: white; border-radius: 12px; box-shadow: 0 2px 10px #0001; }
+        h1 { color: #3a49d6; }
+        p { color: #222; }
+        a { color: #3a49d6; text-decoration: underline; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>Welcome to Shann Bhakta's Portfolio!</h1>
+        <p>This page is live on <b>shannbhakta.com</b> and powered by Cloudflare Workers.</p>
+        <p>To make this your live Notion site, <b>replace this HTML with an export from Notion</b> or use a tool like <a href="https://fruitionsite.com/" target="_blank">Fruition</a>, <a href="https://potion.so/" target="_blank">Potion</a>, or <a href="https://super.so/" target="_blank">Super</a> for a Notion-backed website.</p>
+        <hr />
+        <h3>API Endpoints:</h3>
+        <ul>
+          <li><code>/v1/page/:pageId</code></li>
+          <li><code>/v1/table/:pageId</code></li>
+          <li><code>/v1/user/:userId</code></li>
+          <li><code>/v1/search</code></li>
+        </ul>
+      </div>
+    </body>
+    </html>
+  `, {
+    headers: { "Content-Type": "text/html" }
+  })
+);
+
+// --- Your API endpoints (unchanged) ---
 router.options("*", () => new Response(null, { headers: corsHeaders }));
 router.get("/v1/page/:pageId", pageRoute);
 router.get("/v1/table/:pageId", tableRoute);
 router.get("/v1/user/:userId", userRoute);
 router.get("/v1/search", searchRoute);
 
+// --- All other routes: 404 handler ---
 router.get("*", async () =>
   createResponse(
     {
       error: `Route not found!`,
-      routes: ["/v1/page/:pageId", "/v1/table/:pageId", "/v1/user/:pageId"],
+      routes: ["/", "/v1/page/:pageId", "/v1/table/:pageId", "/v1/user/:userId", "/v1/search"],
     },
     {},
     404
