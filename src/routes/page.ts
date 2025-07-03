@@ -8,7 +8,14 @@ export async function pageRoute(req: HandlerRequest) {
   const pageId = parsePageId(req.params.pageId);
   const page = await fetchPageById(pageId!, req.notionToken);
 
-  const baseBlocks = page.recordMap.block;
+console.log("DEBUG: Notion page object:", page);
+
+if (!page || !page.recordMap || !page.recordMap.block) {
+  console.log("ERROR: Notion response missing 'block'!");
+  return new Response("Invalid Notion page data.", { status: 500 });
+}
+
+const baseBlocks = page.recordMap.block;
 
   let allBlocks: { [id: string]: BlockType & { collection?: any } } = {
     ...baseBlocks,

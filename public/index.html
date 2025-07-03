@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shann Bhakta Portfolio</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; }
+    h1 { font-size: 2rem; color: #444; }
+    .block { margin-bottom: 1rem; padding: 1rem; border: 1px solid #ddd; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>Shann Bhakta | RevOps & Strategy Portfolio</h1>
+  <div id="content">Loading...</div>
+
+  <script>
+    fetch("/v1/page/21499559505c807bb7dcd70b762c8a27") // your Notion Page ID
+      .then(res => res.json())
+      .then(data => {
+        const rootId = "21499559505c807bb7dcd70b762c8a27"; // your Notion Page ID
+        const blocks = data[rootId]?.value?.content || [];
+        const contentEl = document.getElementById("content");
+        contentEl.innerHTML = ""; // clear loading text
+
+        blocks.forEach(id => {
+          const block = data[id];
+          const props = block?.value?.properties;
+
+          if (props && props.title) {
+            const el = document.createElement("div");
+            el.className = "block";
+            el.innerText = props.title[0][0]; // Shows plain text content
+            contentEl.appendChild(el);
+          }
+        });
+      })
+      .catch(error => {
+        document.getElementById("content").innerText = "Failed to load content.";
+        console.error("Fetch error:", error);
+      });
+  </script>
+</body>
+</html>
